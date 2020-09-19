@@ -1,5 +1,0 @@
-/target
-/.idea
-Cargo.lock
-.gitignore
-fox_jvm.iml
