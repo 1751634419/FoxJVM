@@ -1,5 +1,5 @@
 pub mod env {
-    use crate::class::class::*;
+    use crate::class::*;
 
     pub struct Environment {
         class_loaders: Vec<Box<dyn ClassLoader>>
