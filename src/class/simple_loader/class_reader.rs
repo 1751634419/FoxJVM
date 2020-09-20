@@ -1,5 +1,6 @@
 use crate::class::class::Class;
 use crate::class::simple_loader::constant_pool::ConstantPool;
+use crate::class::simple_loader::attribute_info::{AttributeInfo, read_attribute_info_vec};
 
 pub struct ClassFile {
     // magic
@@ -10,9 +11,9 @@ pub struct ClassFile {
     pub(crate) this_class: u16,
     pub(crate) super_class: u16,
     pub(crate) interfaces: Vec<u16>,
-    // fields
-    // methods
-    // attributes
+    pub(crate) fields: Vec<MemberInfo>,
+    pub(crate) methods: Vec<MemberInfo>,
+    pub(crate) attributes: Vec<Box<dyn AttributeInfo>>
 }
 
 impl ClassFile {
@@ -28,7 +29,9 @@ impl ClassFile {
         let this_class = reader.read_u16();
         let super_class = reader.read_u16();
         let interfaces = reader.read_u16s();
-
+        let fields = MemberInfo::read_members(reader, &constant_pool);
+        let methods = MemberInfo::read_members(reader, &constant_pool);
+        let attributes = read_attribute_info_vec(reader, &constant_pool);
 
         return ClassFile {
             minor_version: minor_version,
@@ -38,8 +41,56 @@ impl ClassFile {
             this_class: this_class,
             super_class: super_class,
             interfaces: interfaces,
-
+            fields: fields,
+            methods: methods,
+            attributes: attributes
         }
+    }
+}
+
+/*
+field_info {
+    u2             access_flags;
+    u2             name_index;
+    u2             descriptor_index;
+    u2             attributes_count;
+    attribute_info attributes[attributes_count];
+}
+method_info {
+    u2             access_flags;
+    u2             name_index;
+    u2             descriptor_index;
+    u2             attributes_count;
+    attribute_info attributes[attributes_count];
+}
+*/
+
+pub struct MemberInfo {
+    access_flags: u16,
+    name_index: u16,
+    descriptor_index: u16,
+    attributes: Vec<Box<dyn AttributeInfo>>,
+}
+
+impl MemberInfo {
+    pub fn new(reader: &mut ClassReader, cp: &ConstantPool) -> MemberInfo {
+        return MemberInfo {
+            access_flags: reader.read_u16(),
+            name_index: reader.read_u16(),
+            descriptor_index: reader.read_u16(),
+            attributes: read_attribute_info_vec(reader, cp),
+        }
+    }
+
+    pub fn read_members(reader: &mut ClassReader, cp: &ConstantPool) -> Vec<MemberInfo> {
+        let n = reader.read_u16();
+        let mut vec: Vec<MemberInfo> = vec![];
+
+        for i in 0..n {
+            vec.push(MemberInfo::new(reader, cp));
+        }
+
+        return vec;
     }
 }
 

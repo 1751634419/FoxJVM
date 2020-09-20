@@ -1,13 +1,13 @@
-pub mod jvm {
+pub mod env {
     use crate::class::class::*;
 
-    pub struct VirtualMachine {
+    pub struct Environment {
         class_loaders: Vec<Box<dyn ClassLoader>>
     }
 
-    impl VirtualMachine {
-        pub fn new(class_loaders: Vec<Box<dyn ClassLoader>>) -> VirtualMachine {
-            return VirtualMachine {
+    impl Environment {
+        pub fn new(class_loaders: Vec<Box<dyn ClassLoader>>) -> Environment {
+            return Environment {
                 class_loaders,
             }
         }

@@ -15,9 +15,17 @@ impl ConstantInfo for ConstantUTF8Info {
 
         return false;
     }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
 }
 
 impl ConstantUTF8Info {
+    pub fn get_str(&self) -> &String {
+        return &self.str;
+    }
+
     fn decode_mutf8(data: Vec<u8>) -> String {
         /*
         the data vector shouldn't be reversed,
@@ -98,6 +106,10 @@ impl ConstantInfo for ConstantClassInfo {
 
         return false;
     }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
 }
 
 pub struct ConstantStringInfo {
@@ -109,6 +121,10 @@ impl ConstantInfo for ConstantStringInfo {
         self.string_index = reader.read_u16();
 
         return false;
+    }
+
+    fn as_any(&self) -> &dyn Any {
+        self
     }
 }
 
@@ -124,6 +140,10 @@ impl ConstantInfo for ConstantMemberRefInfo {
 
         return false;
     }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
 }
 
 pub struct ConstantIntegerInfo {
@@ -136,6 +156,10 @@ impl ConstantInfo for ConstantIntegerInfo {
 
         return false;
     }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
 }
 
 pub struct ConstantLongInfo {
@@ -147,6 +171,10 @@ impl ConstantInfo for ConstantLongInfo {
         self.val = reader.read_u64() as i64;
 
         return true;
+    }
+
+    fn as_any(&self) -> &dyn Any {
+        self
     }
 }
 
@@ -165,6 +193,10 @@ impl ConstantInfo for ConstantDoubleInfo {
 
         return true;
     }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
 }
 
 pub struct ConstantFloatInfo {
@@ -182,6 +214,10 @@ impl ConstantInfo for ConstantFloatInfo {
 
         return false;
     }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
 }
 
 pub struct ConstantFieldRefInfo {
@@ -195,6 +231,10 @@ impl ConstantInfo for ConstantFieldRefInfo {
         self.name_and_type_index = reader.read_u16();
 
         return false;
+    }
+
+    fn as_any(&self) -> &dyn Any {
+        self
     }
 }
 
@@ -210,6 +250,10 @@ impl ConstantInfo for ConstantMethodRefInfo {
 
         return false;
     }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
 }
 
 pub struct ConstantInterfaceMethodRefInfo {
@@ -223,6 +267,10 @@ impl ConstantInfo for ConstantInterfaceMethodRefInfo {
         self.name_and_type_index = reader.read_u16();
 
         return false;
+    }
+
+    fn as_any(&self) -> &dyn Any {
+        self
     }
 }
 
@@ -238,6 +286,10 @@ impl ConstantInfo for ConstantNameAndTypeInfo {
 
         return false;
     }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
 }
 
 pub struct ConstantMethodHandleInfo {
@@ -252,6 +304,10 @@ impl ConstantInfo for ConstantMethodHandleInfo {
 
         return false;
     }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
 }
 
 pub struct ConstantMethodTypeInfo {
@@ -263,6 +319,10 @@ impl ConstantInfo for ConstantMethodTypeInfo {
         self.descriptor_index = reader.read_u16();
 
         return false;
+    }
+
+    fn as_any(&self) -> &dyn Any {
+        self
     }
 }
 
@@ -278,13 +338,22 @@ impl ConstantInfo for ConstantInvokeDynamicInfo {
 
         return false;
     }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
 }
 
-pub struct ConstantPool (Vec<Box<dyn ConstantInfo>>);
+pub struct ConstantPool (Vec<Option<Box<dyn ConstantInfo>>>);
 
 pub trait ConstantInfo {
     fn read_info(&mut self, reader: &mut ClassReader) -> bool;
+
+    fn as_any(&self) -> &dyn Any;
 }
+
+use std::any::{Any};
+use std::borrow::Borrow;
 
 fn read_constant_info(reader: &mut ClassReader) -> Box<dyn ConstantInfo> {
     let index = reader.read_u8();
@@ -313,19 +382,36 @@ fn read_constant_info(reader: &mut ClassReader) -> Box<dyn ConstantInfo> {
 impl ConstantPool {
     pub fn new(reader: &mut ClassReader) -> ConstantPool {
         let cp_count = reader.read_u16();
-        let mut info: Vec<Box<dyn ConstantInfo>> = vec![];
+        let mut info: Vec<Option<Box<dyn ConstantInfo>>> = vec![];
 
         let mut i = 1;
+        info.push(None); // placeholder for index #0
         while i < cp_count {
             let mut cp = read_constant_info(reader);
-            if cp.read_info(reader) {
-                i += 1;
-            }
+            let plus = cp.read_info(reader);
 
-            info.push(cp);
+            info.push(Some(cp));
             i += 1;
+
+            if plus {
+                i += 1;
+                info.push(None);
+            }
         }
 
         return ConstantPool(info);
+    }
+
+    pub fn get(&self, n: usize) -> Option<&Option<Box<dyn ConstantInfo>>> {
+        let v = self.0.get(n);
+        return v;
+    }
+
+    pub fn get_utf8(&self, n: usize) -> Option<&ConstantUTF8Info> {
+        self.get_any(n).downcast_ref::<ConstantUTF8Info>()
+    }
+
+    pub fn get_any(&self, n: usize) -> &dyn Any {
+        self.get(n).unwrap().as_ref().unwrap().as_any()
     }
 }

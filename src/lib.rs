@@ -1,11 +1,11 @@
-pub mod jvm;
+pub mod env;
 pub mod class;
 
 #[cfg(test)]
 mod tests {
     use super::class::simple_loader::simple_loader::*;
     use super::class::class::*;
-    use super::jvm::jvm::*;
+    use super::env::env::*;
 
     #[test]
     fn it_works() {
@@ -17,7 +17,8 @@ mod tests {
         let my_class_loader : SimpleClassLoader = SimpleClassLoader::new("D:\\Rustlang\\JVM\\Test\\out\\production\\Test\\".to_string(), ClassPathType::Folder);
         loaders.push(Box::new(my_class_loader));
 
-        let vm : VirtualMachine = VirtualMachine::new(loaders);
-        vm.load_class("test/Main");
+        let env : Environment = Environment::new(loaders);
+        env.load_class("test/Main");
+        // env.load_class("java/lang/class");
     }
 }
