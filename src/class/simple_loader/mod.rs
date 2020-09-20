@@ -3,7 +3,7 @@ mod class_reader;
 mod attribute_info;
 
 pub mod simple_loader {
-    use crate::class::class::*;
+    use crate::class::*;
     use std::fs::File;
     use std::fs;
     use crate::class::simple_loader::class_reader::{ClassReader, ClassFile};

@@ -1,4 +1,4 @@
-use crate::class::class::Class;
+use crate::class::*;
 use crate::class::simple_loader::constant_pool::ConstantPool;
 use crate::class::simple_loader::attribute_info::{AttributeInfo, read_attribute_info_vec};
 

@@ -4,7 +4,7 @@ pub mod class;
 #[cfg(test)]
 mod tests {
     use super::class::simple_loader::simple_loader::*;
-    use super::class::class::*;
+    use super::class::*;
     use super::env::env::*;
 
     #[test]

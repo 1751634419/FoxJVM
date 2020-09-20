@@ -1,6 +1,6 @@
 use crate::class::simple_loader::class_reader::ClassReader;
 use crate::class::simple_loader::constant_pool::{ConstantPool, ConstantInfo};
-use crate::class::class::Class;
+use crate::class::*;
 use std::fs::read;
 
 pub trait AttributeInfo {
