@@ -6,6 +6,7 @@ mod tests {
     use super::class::simple_loader::simple_loader::*;
     use super::class::*;
     use super::env::env::*;
+    use crate::env::basic_env_elements::OperandStack;
 
     #[test]
     fn it_works() {

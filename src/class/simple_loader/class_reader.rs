@@ -99,7 +99,6 @@ pub struct ClassReader {
     point: usize,
 }
 
-// todo rewrite the implementation with safer code
 impl ClassReader {
     pub fn new(data: Vec<u8>) -> ClassReader {
         return ClassReader {
@@ -111,28 +110,40 @@ impl ClassReader {
     pub fn read_u64(&mut self) -> u64 {
         let data = self.read_reversed_data(8);
 
-        let ptr :*const u8 = data.as_ptr();
-        let ptr :*const u64 = ptr as *const u64;
-        let s = unsafe{ *ptr};
-        return s;
+        // let ptr :*const u8 = data.as_ptr();
+        // let ptr :*const u64 = ptr as *const u64;
+        // let s = unsafe{ *ptr};
+        // return s;
+        let d : [u8; 8] = [*data.get(0).unwrap(), *data.get(1).unwrap(),
+            *data.get(2).unwrap(), *data.get(3).unwrap(),
+            *data.get(4).unwrap(), *data.get(5).unwrap(),
+            *data.get(6).unwrap(), *data.get(7).unwrap()];
+
+        return u64::from_le_bytes(d);
     }
 
     pub fn read_u16(&mut self) -> u16 {
         let data = self.read_reversed_data(2);
 
-        let ptr :*const u8 = data.as_ptr();
-        let ptr :*const u16 = ptr as *const u16;
-        let s = unsafe{ *ptr};
-        return s;
+        // let ptr :*const u8 = data.as_ptr();
+        // let ptr :*const u16 = ptr as *const u16;
+        // let s = unsafe{ *ptr};
+        // return s;
+        let d : [u8; 2] = [*data.get(0).unwrap(), *data.get(1).unwrap()];
+
+        return u16::from_le_bytes(d);
     }
 
     pub fn read_u32(&mut self) -> u32 {
+        // let ptr :*const u8 = data.as_ptr();
+        // let ptr :*const u32 = ptr as *const u32;
+        // let s = unsafe{ *ptr};
+        // return u32::from_be_bytes(data);
         let data = self.read_reversed_data(4);
+        let d : [u8; 4] = [*data.get(0).unwrap(), *data.get(1).unwrap(),
+            *data.get(2).unwrap(), *data.get(3).unwrap()];
 
-        let ptr :*const u8 = data.as_ptr();
-        let ptr :*const u32 = ptr as *const u32;
-        let s = unsafe{ *ptr};
-        return s;
+        return u32::from_le_bytes(d);
     }
 
     pub fn read_u16s(&mut self) -> Vec<u16> {

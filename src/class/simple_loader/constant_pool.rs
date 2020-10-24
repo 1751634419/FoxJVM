@@ -353,7 +353,6 @@ pub trait ConstantInfo {
 }
 
 use std::any::{Any};
-use std::borrow::Borrow;
 
 fn read_constant_info(reader: &mut ClassReader) -> Box<dyn ConstantInfo> {
     let index = reader.read_u8();

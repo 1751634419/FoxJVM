@@ -1,4 +1,5 @@
 # FoxJVM
+***(UNDER GNU/GPL)***
 > THIS PROJECT REMAINS ***INCOMPLETE*** AND IS STILL ***FAR FROM RUNNING NORMALLY***
 
 
@@ -9,11 +10,11 @@
 ## Contribution
 
 
-## Reference Documents
+### Reference Documents
 ***The Java Virtual Machine Specification, Java SE 14 Edition.***
 
 
-## Indirect Contributors
+### Indirect Contributors
 ***Mr. Zhang Xiuhong***
 
 
@@ -25,7 +26,7 @@
 2. The unsafe code is going to be rewritten in a safer way.
 3. Rather than providing with the means of bridging JNI and the VM, several necessary native methods will be implemented in Rust.
 
-*It is estimated that the aforementioned objects are going to be implemented in three to four months most probably.*
+*It is estimated that the aforementioned objects are going to be implemented in approximately three months most probably.*
 
 
 ### The Much Further Planning
@@ -33,6 +34,9 @@
 2. Why not run Minecraft Client/Server on it?
 3. Reconstruct parts of the project to optimize the efficiency.
 
+### Licensing
+The source code is licensed under GPL v3. It's available [here](/LICENSE).
 
-# About The Author
+# FAQ
+### Who are you?
 Dude, just guess who I am XD
