@@ -1,6 +1,6 @@
-mod constant_pool;
+pub mod constant_pool;
 mod class_reader;
-mod attribute_info;
+pub mod attribute_info;
 
 pub mod simple_loader {
     use crate::class::*;

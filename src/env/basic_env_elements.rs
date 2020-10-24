@@ -1,6 +1,6 @@
-use std::ops::Deref;
-use std::any::Any;
 use crate::env::object::Object;
+use std::borrow::Borrow;
+use std::ops::Deref;
 
 pub struct Frame {
     pub local_vars: LocalVars,
@@ -18,7 +18,7 @@ impl Frame {
 
 pub struct Slot {
     pub val_num: i32,
-    pub val_obj: Option<Object>
+    pub val_ref: Option<Object>
 }
 
 pub struct LocalVars {
@@ -29,7 +29,7 @@ impl LocalVars {
     pub fn new(size: usize) -> LocalVars {
         let mut vec = Vec::new();
         for i in 0..size {
-            vec.push(Slot { val_num: 0, val_obj: None });
+            vec.push(Slot { val_num: 0, val_ref: None });
         }
 
         return LocalVars {
@@ -98,16 +98,17 @@ impl LocalVars {
         }
     }
 
-    pub fn set_obj(&mut self, n: usize, v: Object) {
+    pub fn set_ref(&mut self, n: usize, v: Object) {
         let mut slot = self.vec.get_mut(n).unwrap();
-        slot.val_obj = Option::Some(v);
+        slot.val_ref = Option::Some(v);
     }
 
-    pub fn get_obj(&self, n: usize) -> &Option<Object> {
+    pub fn get_ref(&self, n: usize) -> Option<Object> {
         if let Some(v) = self.vec.get(n) {
-            return &v.val_obj;
+            let a = v.val_ref;
+            return None;
         } else {
-            return &None;
+            return None;
         }
     }
 }
@@ -165,14 +166,14 @@ impl OperandStack {
         return self.local_vars.get_f64(self.index);
     }
 
-    pub fn push_obj(&mut self, obj: Object) {
-        self.local_vars.set_obj(self.index, obj);
+    pub fn push_ref(&mut self, obj: Object) {
+        self.local_vars.set_ref(self.index, obj);
         self.index -= 1;
     }
 
-    pub fn pop_obj(&mut self) -> &Option<Object> {
+    pub fn pop_ref(&mut self) -> Option<Object> {
         self.index -= 1;
-        return self.local_vars.get_obj(self.index);
+        return self.local_vars.get_ref(self.index);
     }
 }
 

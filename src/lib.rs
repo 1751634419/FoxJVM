@@ -1,5 +1,6 @@
 pub mod env;
 pub mod class;
+pub mod int;
 
 #[cfg(test)]
 mod tests {

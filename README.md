@@ -1,5 +1,7 @@
 # FoxJVM
-***(UNDER GNU/GPL)***
+[![Build Status](https://img.shields.io/badge/Building-Error-red.svg?style=flat-square)](https://github.com/1751634419/FoxJVM) 
+[![GitHub license](https://img.shields.io/badge/License-GPL-blue.svg?style=flat-square)](https://github.com/1751634419/FoxJVM) 
+[![Project Status](https://img.shields.io/badge/Status-Stopped-yellow.svg?style=flat-square)](https://github.com/1751634419/FoxJVM) 
 > THIS PROJECT REMAINS ***INCOMPLETE*** AND IS STILL ***FAR FROM RUNNING NORMALLY***
 
 
@@ -38,5 +40,8 @@
 The source code is licensed under GPL v3. It's available [here](/LICENSE).
 
 # FAQ
-### Who are you?
-Dude, just guess who I am XD
+### Q: Is the implementation of JVM planning to go into operation?
+A: No, it is currently by no means an operational one for operating.
+
+### Q: What is the project written for?
+A: Just for fun. You may join me whenever you'd like to.
